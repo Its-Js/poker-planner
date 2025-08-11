@@ -1,0 +1,11 @@
+---
+// src/components/TodayCard.astro
+import { getCardForDate } from "../utils/getCardForDate";
+const today = new Date();
+const card = getCardForDate(today);
+---
+
+<div class="card">
+  <h2>Card of the Day</h2>
+  <p>{card.name}</p>
+</div>

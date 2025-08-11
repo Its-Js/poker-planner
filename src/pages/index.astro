@@ -1,0 +1,71 @@
+---
+import { getCardForDate } from "../utils/getCardForDate";
+import "../styles/global.css";
+
+const today = new Date();
+const card = getCardForDate(today);
+
+const dayName = today.toLocaleDateString("en-GB", { weekday: "short" }); // Tue
+const dateDisplay = today.toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "short",
+}); // 12 Aug
+
+let weekNumberPart = "";
+let weekRangePart = "";
+
+if (card.weekStart && card.weekEnd && card.weekNumber) {
+  weekNumberPart = `Week ${card.weekNumber} / 52:`;
+  weekRangePart = `${card.weekStart.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+  })} – ${card.weekEnd.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+  })}`;
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Poker Planner</title>
+  </head>
+  <body>
+    <main class="centered">
+      <div class="clock">
+        <div class="date">{dayName} {dateDisplay}</div>
+        <div id="time" class="time">-- --</div>
+      </div>
+
+      <h1>
+        <strong>{weekNumberPart}</strong>
+        <span class="week-range">{weekRangePart}</span>
+      </h1>
+
+      <h1>
+        {card.rank} of {card.suit}
+        <span class={`suit ${card.suit?.toLowerCase()}`}>{card.suitSymbol}</span
+        >
+      </h1>
+    </main>
+
+    <script is:inline>
+      function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        const timeEl = document.getElementById("time");
+        if (timeEl) {
+          timeEl.textContent = h + ":" + m;
+        }
+      }
+
+      updateClock();
+      setInterval(updateClock, 10_000);
+    </script>
+  </body>
+</html>
