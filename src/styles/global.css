@@ -10,12 +10,16 @@ body {
 }
 
 .centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
   text-align: center;
-  padding: 2rem;
 }
 
 .clock {
-  margin-bottom: 2rem;
+  margin-top: 4rem;
 }
 
 .clock .date {
@@ -30,19 +34,16 @@ body {
   color: #555;
 }
 
-h1 {
+.week {
   font-size: 1.5rem;
-
-  margin: 1rem 0 0.5rem;
-}
-
-h1 strong {
-  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .week-range {
+  font-size: 2rem;
   font-weight: 600;
   color: #555;
+  margin-bottom: 6rem;
 }
 
 .range {
@@ -52,7 +53,12 @@ h1 strong {
 
 .suit {
   margin: 0 0.25rem;
-  font-size: 1.5rem;
+  font-size: 3rem;
+}
+
+.card-suit {
+  font-size: 3rem;
+  font-weight: 700;
 }
 
 .suit.hearts,

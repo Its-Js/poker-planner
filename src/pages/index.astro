@@ -41,14 +41,16 @@ if (card.weekStart && card.weekEnd && card.weekNumber) {
         <div id="time" class="time">-- --</div>
       </div>
 
-      <h1><strong>{weekNumberPart}</strong></h1>
-      <h1 class="week-range">{weekRangePart}</h1>
-
-      <h1>
+      <div class="card-suit">
         {card.rank} of {card.suit}
         <span class={`suit ${card.suit?.toLowerCase()}`}>{card.suitSymbol}</span
         >
-      </h1>
+      </div>
+
+      <div>
+        <div class="week"><strong>{weekNumberPart}</strong></div>
+        <div class="week-range">{weekRangePart}</div>
+      </div>
     </main>
 
     <script is:inline>
