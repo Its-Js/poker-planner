@@ -47,6 +47,48 @@ body {
   color: #555;
 }
 
+.week-days-container,
+.week-days-numbers-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem; /* spacing between boxes */
+  margin-top: 0.5rem;
+}
+
+.week-day,
+.week-day-number {
+  border: 1px solid #888; /* gray border */
+  padding: 0.3rem 0.6rem;
+  min-width: 2.5rem;
+  text-transform: capitalize;
+  font-family: monospace;
+  font-weight: 600;
+  color: #555;
+  border-radius: 4px;
+  user-select: none;
+  text-align: center;
+}
+
+.week-day {
+  color: #888;
+}
+
+.week-day-num {
+  color: #333;
+  font-weight: 700;
+}
+
+.week-day-number.out-of-range {
+  color: #aaa; /* greyed out */
+}
+
+.week-day-number.today {
+  color: red;
+  font-weight: 700;
+  border: 1px solid red;
+  border-radius: 4px;
+}
+
 .range {
   font-size: 1.1rem;
   color: #555;
