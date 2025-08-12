@@ -21,6 +21,13 @@ interface DayInfo {
   isToday: boolean;
 }
 
+function seededRandom(seed: number, min: number, max: number) {
+  // Simple deterministic pseudo-random based on sine
+  const x = Math.sin(seed) * 10000;
+  const rand = x - Math.floor(x);
+  return Math.floor(rand * (max - min + 1)) + min;
+}
+
 let weekGrid: DayInfo[] = [];
 let weekNumberPart = "";
 let weekRangePart = "";
@@ -137,8 +144,41 @@ const fanCards = cards.slice(startIdx, endIdx + 1);
           {
             fanCards.map((c, i) => {
               const isCurrent = startIdx + i === currentIndex;
+
+              const relativePos = i - halfFan;
+
+              // For current card no rotation
+              if (isCurrent) {
+                return (
+                  <div
+                    class="card current"
+                    style="transform: translateY(-50px); transition: transform 0.3s ease;"
+                  >
+                    <div class="card-corner">
+                      <div class="card-rank">{c.rank}</div>
+                      <div class={`card-suit-symbol ${c.suit?.toLowerCase()}`}>
+                        {c.suitSymbol}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              // Use absolute card index as seed for deterministic rotation
+              const seed = startIdx + i;
+
+              // Get random rotation between 1 and 10 degrees
+              const rotationDegree = seededRandom(seed, 1, 5);
+
+              // Left side cards rotate negative, right side rotate positive
+              const rotation =
+                relativePos < 0 ? -rotationDegree : rotationDegree;
+
               return (
-                <div class={`card ${isCurrent ? "current" : ""}`}>
+                <div
+                  class="card"
+                  style={`transform: rotate(${rotation}deg); transition: transform 0.3s ease;`}
+                >
                   <div class="card-corner">
                     <div class="card-rank">{c.rank}</div>
                     <div class={`card-suit-symbol ${c.suit?.toLowerCase()}`}>
