@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   margin: 0;
   padding: 0;
@@ -47,46 +53,52 @@ body {
   color: #555;
 }
 
-.week-days-container,
-.week-days-numbers-container {
-  display: flex;
-  justify-content: center;
-  gap: 0.25rem; /* spacing between boxes */
-  margin-top: 0.5rem;
+.cal {
+  width: 100%;
 }
 
-.week-day,
-.week-day-number {
-  border: 1px solid #888; /* gray border */
-  padding: 0.3rem 0.6rem;
-  min-width: 2.5rem;
-  text-transform: capitalize;
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
   font-family: monospace;
-  font-weight: 600;
-  color: #555;
-  border-radius: 4px;
-  user-select: none;
   text-align: center;
+  width: 100%;
+  max-width: 100%;
 }
 
-.week-day {
-  color: #888;
+.week-cell,
+.week-label {
+  aspect-ratio: 1 / 1; /* Make squares */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  user-select: none;
+  color: #555;
 }
 
-.week-day-num {
-  color: #333;
+.week-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.week-cell.out-of-range {
+  color: #bbb;
+  border-color: #eee;
+}
+
+.week-cell.today {
+  color: #c00;
   font-weight: 700;
-}
-
-.week-day-number.out-of-range {
-  color: #aaa; /* greyed out */
-}
-
-.week-day-number.today {
-  color: red;
-  font-weight: 700;
-  border: 1px solid red;
-  border-radius: 4px;
+  border-color: #c00;
+  background: #ffe5e5;
 }
 
 .range {
