@@ -44,7 +44,7 @@ body {
 
 .week-number {
   font-size: 1.5rem;
-  margin-bottom: 0.75rem; /* increase space after whole line */
+  margin-bottom: 1rem; /* increase space after whole line */
   font-weight: 500;
 }
 
