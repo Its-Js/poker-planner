@@ -176,14 +176,14 @@ body {
 
 .card-corner {
   position: absolute;
-  top: 0.5rem;
-  left: 0.25rem;
+  top: 0.75rem;
+  left: 0.5rem;
   display: flex;
   flex-direction: column; /* vertical stack */
   align-items: center; /* center horizontally */
   font-weight: 700;
   font-size: 1.2rem;
-  line-height: 1;
+  line-height: 1.5;
   user-select: none;
 }
 
