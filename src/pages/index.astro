@@ -1,5 +1,6 @@
 ---
 import { getCardForDate } from "../utils/getCardForDate";
+import { cards } from "../data/cards";
 import "../styles/global.css";
 
 const today = new Date();
@@ -56,6 +57,28 @@ if (card.weekStart && card.weekEnd && card.weekNumber) {
     });
   }
 }
+
+// Prepare 13-card fan centered on current card
+const totalCards = cards.length; // 52
+const fanSize = 13;
+const halfFan = Math.floor(fanSize / 2);
+const currentIndex = (card.weekNumber ?? 1) - 1; // zero-based index
+
+// Calculate start and end indices for the fan slice, handling edges
+let startIdx = currentIndex - halfFan;
+let endIdx = currentIndex + halfFan;
+
+if (startIdx < 0) {
+  endIdx += -startIdx; // shift forward
+  startIdx = 0;
+}
+if (endIdx > totalCards - 1) {
+  startIdx -= endIdx - (totalCards - 1); // shift backward
+  endIdx = totalCards - 1;
+  if (startIdx < 0) startIdx = 0;
+}
+
+const fanCards = cards.slice(startIdx, endIdx + 1);
 ---
 
 <!doctype html>
@@ -96,7 +119,9 @@ if (card.weekStart && card.weekEnd && card.weekNumber) {
           {
             weekGrid.map((day) => (
               <div
-                class={`week-cell ${!day.inRange ? "out-of-range" : ""} ${day.isToday ? "today" : ""}`}
+                class={`week-cell ${!day.inRange ? "out-of-range" : ""} ${
+                  day.isToday ? "today" : ""
+                }`}
               >
                 {day.dateNum}
               </div>
@@ -104,11 +129,27 @@ if (card.weekStart && card.weekEnd && card.weekNumber) {
           }
         </div>
       </div>
-
-      <div class="card-suit">
-        {card.rank}<span class={`suit ${card.suit?.toLowerCase()}`}
-          >{card.suitSymbol}</span
+      <div class="card-fan-display">
+        <div
+          class="card-fan"
+          style="display: grid; grid-template-columns: repeat(13, 60px); gap: 0.5rem; justify-content: center; margin-top: 1rem;"
         >
+          {
+            fanCards.map((c, i) => {
+              const isCurrent = startIdx + i === currentIndex;
+              return (
+                <div class={`card ${isCurrent ? "current" : ""}`}>
+                  <div class="card-corner">
+                    <div class="card-rank">{c.rank}</div>
+                    <div class={`card-suit-symbol ${c.suit?.toLowerCase()}`}>
+                      {c.suitSymbol}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
       </div>
     </main>
 
@@ -122,7 +163,6 @@ if (card.weekStart && card.weekEnd && card.weekNumber) {
           timeEl.textContent = h + ":" + m;
         }
       }
-
       updateClock();
       setInterval(updateClock, 10_000);
     </script>
