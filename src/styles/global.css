@@ -1,15 +1,10 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 html {
   margin: 0;
   padding: 0;
 }
 
 body {
+  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #f0f0f5;
   color: #000;
@@ -66,7 +61,7 @@ body {
 
 .week-grid {
   display: grid;
-  grid-template-columns: repeat(7, 3.5rem); /* 7 columns, each 3.5rem */
+  grid-template-columns: repeat(7, 2.5rem); /* 7 columns, each 3.5rem */
   gap: 0.5rem;
   margin-top: 0.5rem;
   font-family: monospace;
@@ -76,7 +71,7 @@ body {
 }
 
 .week-cell {
-  width: 3.5rem;
+  width: 2.5rem;
   height: 3.5rem;
   display: flex;
   align-items: center;
@@ -102,7 +97,7 @@ body {
 }
 
 .week-label {
-  width: 3.5rem;
+  width: 2.5rem;
   height: 3.5rem;
   display: flex;
   align-items: center;
@@ -136,4 +131,17 @@ body {
 .suit.spades,
 .suit.clubs {
   color: black;
+}
+
+/* Media query for wider screens */
+@media (min-width: 768px) {
+  .week-grid {
+    grid-template-columns: repeat(7, 3.5rem);
+  }
+
+  .week-cell,
+  .week-label {
+    width: 3.5rem;
+    /* height stays the same (3.5rem) */
+  }
 }
