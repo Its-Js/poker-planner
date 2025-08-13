@@ -2,8 +2,9 @@ html {
   margin: 0;
   padding: 0;
   min-width: 360px;
-  height: 100vh;
+  height: 100dvh;
   width: 100dvw;
+  overflow: hidden;
 }
 
 body {
@@ -13,7 +14,7 @@ body {
   color: #000;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
 }
 
 .centered {
@@ -142,6 +143,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transform: translateY(3rem);
 }
 
 .card-fan {
