@@ -28,6 +28,10 @@ body {
   margin-top: 4rem;
 }
 
+.clock {
+  margin-bottom: 5rem;
+}
+
 .clock .date {
   font-size: 1.5rem;
   font-weight: 500;
@@ -164,7 +168,7 @@ body {
 .card {
   position: static; /* assuming grid layout */
   width: 10rem;
-  height: 15rem;
+  height: 25rem;
   background: white;
 
   box-shadow: inset 0 0 0 2px #ccc;
