@@ -95,11 +95,19 @@ function seededRandom(seed: number, min: number, max: number) {
 
 export default function CardIsland() {
   const [today, setToday] = useState(new Date());
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    setHasMounted(true);
+
     const timer = setInterval(() => setToday(new Date()), 10000);
     return () => clearInterval(timer);
   }, []);
+
+  if (!hasMounted) {
+    // Prevent server/client flicker by rendering nothing on server
+    return null;
+  }
 
   const card = getCardForDate(today);
 
