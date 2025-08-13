@@ -29,7 +29,7 @@ body {
 }
 
 .clock {
-  margin-bottom: 5rem;
+  margin-bottom: 4rem;
 }
 
 .clock .date {
@@ -147,7 +147,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateY(3rem);
+  transform: translateY(7rem);
 }
 
 .card-fan {
