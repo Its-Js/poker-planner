@@ -4,16 +4,6 @@ import { cards } from "../data/cards";
 import "../styles/global.css";
 
 const today = new Date();
-
-// Leap year logic
-function isLeapYear(year: number): boolean {
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-}
-const leapYear = isLeapYear(today.getFullYear());
-
-// Total cards based on year
-const totalCards = leapYear ? 54 : 53;
-
 const card = getCardForDate(today);
 
 const dayName = today.toLocaleDateString("en-GB", { weekday: "short" });
@@ -37,88 +27,42 @@ function seededRandom(seed: number, min: number, max: number) {
   return Math.floor(rand * (max - min + 1)) + min;
 }
 
+// === Week Grid Setup ===
 let weekGrid: DayInfo[] = [];
+
+const isJoker = card.isJoker;
+const isLeapDay = card.isLeapDay === true;
+
 let weekNumberPart = "";
 let weekRangePart = "";
 
-const fanSize = 13;
-const halfFan = Math.floor(fanSize / 2);
+const startDate = new Date(card.weekStart);
+startDate.setDate(startDate.getDate() - startDate.getDay());
 
-let currentIndex = 0;
-let startIdx = 0;
-let endIdx = 0;
+for (let i = 0; i < 21; i++) {
+  const day = new Date(startDate);
+  day.setDate(startDate.getDate() + i);
 
-// Detect special Joker dates
-const isSpecialDate =
-  (leapYear &&
-    today.getMonth() === 11 &&
-    (today.getDate() === 30 || today.getDate() === 31)) ||
-  (today.getDate() === 29 && today.getMonth() === 1);
+  const inRange = day >= card.weekStart && day <= card.weekEnd;
+  const isToday = day.toDateString() === today.toDateString();
 
-// Set correct Joker index
-const jokerIndex =
-  leapYear && today.getMonth() === 11 && today.getDate() === 30
-    ? totalCards - 2
-    : totalCards - 1;
+  weekGrid.push({
+    label: fixedWeekDays[day.getDay()],
+    dateNum: String(day.getDate()).padStart(2, "0"),
+    inRange,
+    isToday,
+  });
+}
 
-const isJokerDay =
-  card.isJoker === true ||
-  (leapYear &&
-    today.getMonth() === 11 &&
-    (today.getDate() === 30 || today.getDate() === 31));
-
-if (isJokerDay) {
-  weekNumberPart = "Joker Day";
-
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() - today.getDay());
-
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 20);
-
-  weekRangePart = today.toLocaleDateString("en-GB", {
+if (isJoker) {
+  const labelDate = today.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
   });
-
-  for (let i = 0; i < 21; i++) {
-    const day = new Date(startDate);
-    day.setDate(startDate.getDate() + i);
-
-    const inRange = day.toDateString() === today.toDateString();
-    const isToday = day.toDateString() === today.toDateString();
-
-    weekGrid.push({
-      label: fixedWeekDays[day.getDay()],
-      dateNum: String(day.getDate()).padStart(2, "0"),
-      inRange,
-      isToday,
-    });
-  }
-
-  currentIndex = jokerIndex;
-
-  startIdx = currentIndex - halfFan;
-  endIdx = currentIndex + halfFan;
-
-  if (startIdx < 0) {
-    endIdx += -startIdx;
-    startIdx = 0;
-  }
-  if (endIdx > totalCards - 1) {
-    startIdx -= endIdx - (totalCards - 1);
-    endIdx = totalCards - 1;
-    if (startIdx < 0) startIdx = 0;
-  }
-} else if (card.weekStart && card.weekEnd && card.weekNumber) {
+  weekNumberPart = `Joker: ${labelDate}`;
+  weekRangePart = "";
+} else {
   weekNumberPart = `Week ${card.weekNumber} / 52`;
-
-  const startDate = new Date(card.weekStart);
-  startDate.setDate(startDate.getDate() - startDate.getDay());
-
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 20);
-
   weekRangePart = `${card.weekStart.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -126,107 +70,28 @@ if (isJokerDay) {
     day: "2-digit",
     month: "short",
   })}`;
+}
 
-  for (let i = 0; i < 21; i++) {
-    const day = new Date(startDate);
-    day.setDate(startDate.getDate() + i);
+// === Fan Cards ===
+const fanSize = 13;
+const halfFan = Math.floor(fanSize / 2);
+const currentIndex = (card.weekNumber ?? 1) - 1;
 
-    const inRange = day >= card.weekStart && day <= card.weekEnd;
-    const isToday = day.toDateString() === today.toDateString();
+let startIdx = currentIndex - halfFan;
+let endIdx = currentIndex + halfFan;
+const totalCards = 52;
 
-    weekGrid.push({
-      label: fixedWeekDays[day.getDay()],
-      dateNum: String(day.getDate()).padStart(2, "0"),
-      inRange,
-      isToday,
-    });
-  }
-
-  currentIndex = (card.weekNumber ?? 1) - 1;
-
-  startIdx = currentIndex - halfFan;
-  endIdx = currentIndex + halfFan;
-
-  if (startIdx < 0) {
-    endIdx += -startIdx;
-    startIdx = 0;
-  }
-  if (endIdx > totalCards - 1) {
-    startIdx -= endIdx - (totalCards - 1);
-    endIdx = totalCards - 1;
-    if (startIdx < 0) startIdx = 0;
-  }
-} else {
-  weekNumberPart = "No Week Info";
-
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() - today.getDay());
-
-  for (let i = 0; i < 21; i++) {
-    const day = new Date(startDate);
-    day.setDate(startDate.getDate() + i);
-    const isToday = day.toDateString() === today.toDateString();
-
-    weekGrid.push({
-      label: fixedWeekDays[day.getDay()],
-      dateNum: String(day.getDate()).padStart(2, "0"),
-      inRange: false,
-      isToday,
-    });
-  }
-
-  currentIndex = 0;
+if (startIdx < 0) {
+  endIdx += -startIdx;
   startIdx = 0;
-  endIdx = Math.min(fanSize - 1, totalCards - 1);
+}
+if (endIdx > totalCards - 1) {
+  startIdx -= endIdx - (totalCards - 1);
+  endIdx = totalCards - 1;
+  if (startIdx < 0) startIdx = 0;
 }
 
-// === Fan Card Display ===
-
-let fanCards: typeof cards = [];
-
-if (isSpecialDate) {
-  currentIndex = jokerIndex;
-
-  const fanRangeCards = cards.slice(startIdx, endIdx + 1);
-  const relativeCurrent = currentIndex - startIdx;
-
-  if (relativeCurrent >= 0 && relativeCurrent < fanRangeCards.length) {
-    const shiftedCards = [];
-
-    for (let i = 1; i < relativeCurrent; i++) {
-      shiftedCards.push(fanRangeCards[i]);
-    }
-
-    shiftedCards.push(cards[jokerIndex]);
-
-    for (let i = relativeCurrent + 1; i < fanRangeCards.length; i++) {
-      shiftedCards.push(fanRangeCards[i]);
-    }
-
-    while (shiftedCards.length < fanRangeCards.length) {
-      let nextCardIndex: number;
-      nextCardIndex = endIdx + (shiftedCards.length - fanRangeCards.length) + 1;
-
-      if (nextCardIndex < totalCards) {
-        shiftedCards.push(cards[nextCardIndex]);
-      } else {
-        break;
-      }
-    }
-
-    fanCards = shiftedCards;
-  } else {
-    fanCards = cards.slice(startIdx, endIdx + 1);
-    if (
-      currentIndex - startIdx >= 0 &&
-      currentIndex - startIdx < fanCards.length
-    ) {
-      fanCards[currentIndex - startIdx] = cards[jokerIndex];
-    }
-  }
-} else {
-  fanCards = cards.slice(startIdx, endIdx + 1);
-}
+const fanCards = cards.slice(startIdx, endIdx + 1);
 ---
 
 <!doctype html>
@@ -246,9 +111,9 @@ if (isSpecialDate) {
 
       <div class="cal">
         <div class="week-number">
-          <strong>{weekNumberPart}</strong>: <span class="week-range"
-            >{weekRangePart}</span
-          >
+          <strong>{weekNumberPart}</strong>
+          {isJoker ? "" : ": "}
+          <span class="week-range">{weekRangePart}</span>
         </div>
 
         <div class="week-grid">
@@ -285,43 +150,26 @@ if (isSpecialDate) {
             fanCards.map((c, i) => {
               const isCurrent = startIdx + i === currentIndex;
               const relativePos = i - halfFan;
-
-              if (isCurrent) {
-                return (
-                  <div
-                    class="card current"
-                    style="transform: translateY(-50px); transition: transform 0.3s ease;"
-                  >
-                    <div class="card-corner">
-                      <div class="card-rank">
-                        {c.rank === "JOKER" ? "J" : c.rank}
-                      </div>
-                      <div
-                        class={`card-suit-symbol ${c.rank === "JOKER" ? "joker" : c.suit?.toLowerCase()}`}
-                      >
-                        {c.rank === "JOKER" ? "♛" : c.suitSymbol}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
               const seed = startIdx + i;
               const rotationDegree = seededRandom(seed, 1, 5);
               const rotation =
                 relativePos < 0 ? -rotationDegree : rotationDegree;
 
+              const isJokerCard = isCurrent && card.isJoker;
+
               return (
                 <div
-                  class="card"
-                  style={`transform: rotate(${rotation}deg); transition: transform 0.3s ease;`}
+                  class={`card ${isCurrent ? "current" : ""}`}
+                  style={`transform: ${isCurrent ? "translateY(-50px)" : `rotate(${rotation}deg)`}; transition: transform 0.3s ease;`}
                 >
                   <div class="card-corner">
-                    <div class="card-rank">{c.rank}</div>
+                    <div class="card-rank">{isJokerCard ? "J" : c.rank}</div>
                     <div
-                      class={`card-suit-symbol ${c.rank === "JOKER" ? "joker" : c.suit?.toLowerCase()}`}
+                      class={`card-suit-symbol ${
+                        isJokerCard ? card.color : c.suit?.toLowerCase()
+                      }`}
                     >
-                      {c.rank === "JOKER" ? "♛" : c.suitSymbol}
+                      {isJokerCard ? "♛" : c.suitSymbol}
                     </div>
                   </div>
                 </div>
