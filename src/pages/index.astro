@@ -1,9 +1,86 @@
 ---
-import { getCardForDate } from "../utils/getCardForDate";
 import { cards } from "../data/cards";
+import { weekRanges } from "../data/weekRanges";
 import "../styles/global.css";
 
 const today = new Date();
+const year = today.getFullYear();
+const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+
+function getCardForDate(date: Date) {
+  const isLeapDay =
+    isLeapYear && date.getMonth() === 1 && date.getDate() === 29;
+  const isDec31 = date.getMonth() === 11 && date.getDate() === 31;
+
+  // Find the current week
+  let currentWeekData = null;
+  for (const weekRange of weekRanges) {
+    const weekStartDate = new Date(
+      year,
+      weekRange.start.month,
+      weekRange.start.day
+    );
+    const weekEndDate = new Date(year, weekRange.end.month, weekRange.end.day);
+    if (date >= weekStartDate && date <= weekEndDate) {
+      currentWeekData = weekRange;
+      break;
+    }
+  }
+
+  if (!currentWeekData) {
+    currentWeekData = weekRanges[51]; // fallback to week 52
+  }
+
+  const cardIndex = currentWeekData.weekNumber - 1;
+  const weekStart = new Date(
+    year,
+    currentWeekData.start.month,
+    currentWeekData.start.day
+  );
+  const weekEnd = new Date(
+    year,
+    currentWeekData.end.month,
+    currentWeekData.end.day
+  );
+
+  if (isLeapDay) {
+    return {
+      name: "Joker",
+      isJoker: true,
+      rank: "J",
+      suitSymbol: "♛",
+      color: "red",
+      weekNumber: 9,
+      weekStart,
+      weekEnd,
+      isLeapDay: true,
+    };
+  }
+
+  if (isDec31) {
+    return {
+      name: "Joker",
+      isJoker: true,
+      rank: "J",
+      suitSymbol: "♛",
+      color: "black",
+      weekNumber: 52,
+      weekStart,
+      weekEnd,
+      isLeapDay: false,
+    };
+  }
+
+  return {
+    ...cards[cardIndex],
+    weekNumber: currentWeekData.weekNumber,
+    isJoker: false,
+    isLeapDay: false,
+    weekStart,
+    weekEnd,
+  };
+}
+
 const card = getCardForDate(today);
 
 const dayName = today.toLocaleDateString("en-GB", { weekday: "short" });
@@ -31,7 +108,7 @@ function seededRandom(seed: number, min: number, max: number) {
 let weekGrid: DayInfo[] = [];
 
 const isJoker = card.isJoker;
-const isLeapDay = card.isLeapDay === true;
+const isLeapDay = card.isLeapDay;
 
 let weekNumberPart = "";
 let weekRangePart = "";
@@ -101,6 +178,12 @@ const fanCards = cards.slice(startIdx, endIdx + 1);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <title>Poker Calendar</title>
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
   </head>
   <body>
     <main class="centered">
