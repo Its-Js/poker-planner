@@ -211,7 +211,11 @@ body {
   color: black;
 }
 
-/* Media query for wider screens */
+@media (min-width: 425px) {
+  .card-fan-display {
+    transform: translateY(5rem);
+  }
+}
 @media (min-width: 768px) {
   .week-grid {
     grid-template-columns: repeat(7, 3.5rem);
@@ -221,5 +225,15 @@ body {
   .week-label {
     width: 3.5rem;
     /* height stays the same (3.5rem) */
+  }
+}
+@media (min-width: 1024px) {
+  .card-fan-display {
+    transform: translateY(10rem);
+  }
+}
+@media (min-width: 2560px) {
+  .card-fan-display {
+    transform: translateY(15rem);
   }
 }
