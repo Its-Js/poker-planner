@@ -246,7 +246,7 @@ export default function CardIsland() {
                 className={`card ${isCurrent ? "current" : ""}`}
                 style={{
                   transform: isCurrent
-                    ? "translateY(-50px)"
+                    ? "translateY(-7rem)"
                     : `rotate(${rotation}deg)`,
                   transition: "transform 0.3s ease",
                 }}
