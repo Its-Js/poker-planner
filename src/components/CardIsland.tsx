@@ -20,6 +20,7 @@ function getCardForDate(date: Date) {
       weekRange.start.day
     );
     const weekEndDate = new Date(year, weekRange.end.month, weekRange.end.day);
+    weekEndDate.setHours(23, 59, 59, 999); // Set to end of day
     if (date >= weekStartDate && date <= weekEndDate) {
       currentWeekData = weekRange;
       break;
